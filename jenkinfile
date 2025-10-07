@@ -1,46 +1,28 @@
 pipeline {
     agent any
     tools {
-        maven 'MAVEN_HOME'
+        maven 'MAVEN_HOME'  // Ensure this matches your Maven tool name configured in Jenkins
     }
     stages {
         stage('Clean') {
             steps {
-                // Just clean the project, no manual git clone needed
-                bat 'mvn clean -f Maven_Project/pom.xml'
+                bat 'mvn clean'
             }
         }
         stage('Install') {
             steps {
-                bat 'mvn install -f Maven_Project/pom.xml'
+                bat 'mvn install'
             }
         }
         stage('Test') {
             steps {
-                bat 'mvn test -f Maven_Project/pom.xml'
+                bat 'mvn test'
             }
         }
         stage('Package') {
             steps {
-                bat 'mvn package -f Maven_Project/pom.xml'
+                bat 'mvn package'
             }
-        }
-    }
-    post {
-        success {
-            mail to: 'sushu9423@gmail.com',
-                 subject: "SUCCESS: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]'",
-                 body: "Good news! The build ${env.BUILD_NUMBER} of job ${env.JOB_NAME} succeeded.\nCheck console output at ${env.BUILD_URL}."
-        }
-        failure {
-            mail to: 'sushu9423@gmail.com',
-                 subject: "FAILURE: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]'",
-                 body: "Alert! The build ${env.BUILD_NUMBER} of job ${env.JOB_NAME} failed.\nCheck console output at ${env.BUILD_URL}."
-        }
-        unstable {
-            mail to: 'sushu9423@gmail.com',
-                 subject: "UNSTABLE: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]'",
-                 body: "Warning! The build ${env.BUILD_NUMBER} of job ${env.JOB_NAME} is unstable.\nCheck console output at ${env.BUILD_URL}."
         }
     }
 }
