@@ -7,23 +7,23 @@ pipeline {
         stage('git repo & clean') {
             steps {
                 //bat "rmdir  /s /q mavenjava"
-                bat "git clone https://github.com/Bandi-Sushma-Sree/Maven_Project/new/master"
+                bat "git clone https://github.com/Bandi-Sushma-Sree/Maven_Project"
                 bat "mvn clean -f mavenjava"
             }
         }
         stage('install') {
             steps {
-                bat "mvn install -f mavenjava" #project name#
+                bat "mvn install -f Maven_Project/pom.xml"
             }
         }
         stage('test') {
             steps {
-                bat "mvn test -f mavenjava"
+                bat "mvn test -f Maven_Project/pom.xml"
             }
         }
         stage('package') {
             steps {
-                bat "mvn package -f mavenjava"
+                bat "mvn package -f Maven_Project/pom.xml"
             }
         }
     }
