@@ -1,13 +1,22 @@
 pipeline {
     agent any
     tools {
-        maven 'MAVEN_HOME'
+        maven 'MAVEN_HOME'  // Confirm this is the exact tool name in Jenkins
     }
     stages {
         stage('Clone Repository & Clean Workspace') {
             steps {
                 deleteDir()  // Clean workspace before clone
                 bat "git clone https://github.com/Bandi-Sushma-Sree/Maven_Project.git"
+            }
+        }
+        stage('Debug Info') {
+            steps {
+                dir('Maven_Project') {
+                    bat 'mvn -version'
+                    bat 'dir'
+                    bat 'type pom.xml'
+                }
             }
         }
         stage('Build') {
