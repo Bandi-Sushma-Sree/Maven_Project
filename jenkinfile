@@ -1,29 +1,34 @@
 pipeline {
     agent any
-    tools{
+    tools {
         maven 'MAVEN_HOME'
     }
     stages {
-        stage('git repo & clean') {
+        stage('Clone Repository & Clean Workspace') {
             steps {
-                //bat "rmdir  /s /q mavenjava"
-                bat "git clone https://github.com/Bandi-Sushma-Sree/Maven_Project"
-                bat "mvn clean -f mavenjava"
+                deleteDir()  // Clean workspace before clone
+                bat "git clone https://github.com/Bandi-Sushma-Sree/Maven_Project.git"
             }
         }
-        stage('install') {
+        stage('Build') {
             steps {
-                bat "mvn install -f Maven_Project/pom.xml"
+                dir('Maven_Project') {
+                    bat "mvn clean install"
+                }
             }
         }
-        stage('test') {
+        stage('Test') {
             steps {
-                bat "mvn test -f Maven_Project/pom.xml"
+                dir('Maven_Project') {
+                    bat "mvn test"
+                }
             }
         }
-        stage('package') {
+        stage('Package') {
             steps {
-                bat "mvn package -f Maven_Project/pom.xml"
+                dir('Maven_Project') {
+                    bat "mvn package"
+                }
             }
         }
     }
