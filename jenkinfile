@@ -1,38 +1,46 @@
 pipeline {
     agent any
-    options {
-        skipDefaultCheckout()  // Important: disables default Git checkout by Jenkins
-    }
     tools {
         maven 'MAVEN_HOME'
     }
     stages {
-        stage('Clone Repository & Clean Workspace') {
+        stage('Clean') {
             steps {
-                deleteDir()  // Clean workspace
-                bat "git clone https://github.com/Bandi-Sushma-Sree/Maven_Project.git"
+                // Just clean the project, no manual git clone needed
+                bat 'mvn clean -f SE-Week4.Projects/pom.xml'
             }
         }
-        stage('Build') {
+        stage('Install') {
             steps {
-                dir('Maven_Project') {
-                    bat "mvn clean install"
-                }
+                bat 'mvn install -f SE-Week4.Projects/pom.xml'
             }
         }
         stage('Test') {
             steps {
-                dir('Maven_Project') {
-                    bat "mvn test"
-                }
+                bat 'mvn test -f SE-Week4.Projects/pom.xml'
             }
         }
         stage('Package') {
             steps {
-                dir('Maven_Project') {
-                    bat "mvn package"
-                }
+                bat 'mvn package -f SE-Week4.Projects/pom.xml'
             }
+        }
+    }
+    post {
+        success {
+            mail to: 'sushu9423@gmail.com',
+                 subject: "SUCCESS: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]'",
+                 body: "Good news! The build ${env.BUILD_NUMBER} of job ${env.JOB_NAME} succeeded.\nCheck console output at ${env.BUILD_URL}."
+        }
+        failure {
+            mail to: 'sushu9423@gmail.com',
+                 subject: "FAILURE: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]'",
+                 body: "Alert! The build ${env.BUILD_NUMBER} of job ${env.JOB_NAME} failed.\nCheck console output at ${env.BUILD_URL}."
+        }
+        unstable {
+            mail to: 'sushu9423@gmail.com',
+                 subject: "UNSTABLE: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]'",
+                 body: "Warning! The build ${env.BUILD_NUMBER} of job ${env.JOB_NAME} is unstable.\nCheck console output at ${env.BUILD_URL}."
         }
     }
 }
