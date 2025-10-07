@@ -1,22 +1,16 @@
 pipeline {
     agent any
+    options {
+        skipDefaultCheckout()  // Important: disables default Git checkout by Jenkins
+    }
     tools {
-        maven 'MAVEN_HOME'  // Confirm this is the exact tool name in Jenkins
+        maven 'MAVEN_HOME'
     }
     stages {
         stage('Clone Repository & Clean Workspace') {
             steps {
-                deleteDir()  // Clean workspace before clone
+                deleteDir()  // Clean workspace
                 bat "git clone https://github.com/Bandi-Sushma-Sree/Maven_Project.git"
-            }
-        }
-        stage('Debug Info') {
-            steps {
-                dir('Maven_Project') {
-                    bat 'mvn -version'
-                    bat 'dir'
-                    bat 'type pom.xml'
-                }
             }
         }
         stage('Build') {
